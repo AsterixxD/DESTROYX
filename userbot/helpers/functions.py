@@ -59,12 +59,13 @@ async def yt_search(cat):
     try:
         cat = urllib.parse.quote(cat)
         html = urllib.request.urlopen(
-            "https://www.youtube.com/results?search_query=" + cat
+            f'https://www.youtube.com/results?search_query={cat}'
         )
-        user_data = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-        video_link = None
-        if user_data:
-            video_link = "https://www.youtube.com/watch?v=" + user_data[0]
+
+        if user_data := re.findall(r"watch\?v=(\S{11})", html.read().decode()):
+            video_link = f'https://www.youtube.com/watch?v={user_data[0]}'
+        else:
+            video_link = None
         if video_link:
             return video_link
         return "Couldnt fetch results"
@@ -184,10 +185,7 @@ async def convert_tosticker(image):
 async def covidindia(state):
     url = "https://www.mohfw.gov.in/data/datanew.json"
     req = requests.get(url).json()
-    for i in states:
-        if i == state:
-            return req[states.index(i)]
-    return None
+    return next((req[states.index(i)] for i in states if i == state), None)
 
 
 # for nekobot

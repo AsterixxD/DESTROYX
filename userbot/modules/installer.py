@@ -35,7 +35,7 @@ async def install(event):
                 if shortname in CMD_LIST:
                     string = "**Commands found in** `{}`\n".format((os.path.basename(downloaded_file_name)))
                     for i in CMD_LIST[shortname]:
-                        string += "  •  `" + i 
+                        string += f'  •  `{i}'
                         string += "`\n"
                         if b == 1:
                             a = "__Installing..__"
@@ -48,9 +48,12 @@ async def install(event):
                 return await event.edit(f"Installed module `{os.path.basename(downloaded_file_name)}`")
             else:
                 os.remove(downloaded_file_name)
-                return await event.edit(f"**Failed to Install** \n`Error`\nModule already installed or unknown formet")
+                return await event.edit(
+                    '**Failed to Install** \n`Error`\nModule already installed or unknown formet'
+                )
+
         except Exception as e: 
-            await event.edit(f"**Failed to Install** \n`Error`\n{str(e)}")
+            await event.edit(f'**Failed to Install** \n`Error`\n{e}')
             return os.remove(downloaded_file_name)
     
 
@@ -67,7 +70,9 @@ async def load(event):
         load_module(shortname)
         await event.edit(f"Successfully loaded {shortname}")
     except Exception as e:
-        await event.edit(f"Could not load {shortname} because of the following error.\n{str(e)}")
+        await event.edit(
+            f'Could not load {shortname} because of the following error.\n{e}'
+        )
 
 
 @zzaacckkyy(pattern="^!send (?P<shortname>\w+)$", outgoing=True)
@@ -110,20 +115,28 @@ async def unload(event):
 @javes05(outgoing=True, pattern="^!installall (.*)")
 async def install(event):
     try:
-      chat = event.pattern_match.group(1) ; text = f"**Installing plugins from {chat}..\n\n**" ; cui = await client.get_messages(chat, limit = 75, filter=InputMessagesFilterDocument)  ; total = int(cui.total) ; total_doxx = range(0, total)
+        chat = event.pattern_match.group(1)
+        text = f"**Installing plugins from {chat}..\n\n**"
+        cui = await client.get_messages(chat, limit = 75, filter=InputMessagesFilterDocument)
+        total = int(cui.total)
+        total_doxx = range(total)
     except:
     	return await event.edit("Error\nUsage: `!installall <channel/group username>`")
     for ixo in total_doxx:
-        await event.edit(text) ; mxo = cui[ixo].id ; downloaded_file_name = await event.client.download_media(await client.get_messages(chat, ids=mxo), "userbot/modules/")
+        await event.edit(text)
+        mxo = cui[ixo].id
+        downloaded_file_name = await event.client.download_media(await client.get_messages(chat, ids=mxo), "userbot/modules/")
         if "(" not in downloaded_file_name:
-            path1 = Path(downloaded_file_name) ; shortname = path1.stem
+            path1 = Path(downloaded_file_name)
+            shortname = path1.stem
             if (os.path.basename(downloaded_file_name)).endswith('.py'):
-               try:
-                 load_module(shortname.replace(".py", "")) ; text += f"**• Installed** {(os.path.basename(downloaded_file_name))}\n"
-               except:
-               	text += f"**× Failed to install** {(os.path.basename(downloaded_file_name))}\n" ; os.remove (downloaded_file_name) ; pass
+                try:
+                    load_module(shortname.replace(".py", "")) ; text += f"**• Installed** {(os.path.basename(downloaded_file_name))}\n"
+                except:
+                    text += f"**× Failed to install** {(os.path.basename(downloaded_file_name))}\n"
+                    os.remove (downloaded_file_name)
             else: 
-                  text += f"** Skiped** {(os.path.basename(downloaded_file_name))}\n" ; os.remove (downloaded_file_name)
+                text += f"** Skiped** {(os.path.basename(downloaded_file_name))}\n" ; os.remove (downloaded_file_name)
         else:
             text += f"** Skiped** {(os.path.basename(downloaded_file_name))}\n" ; os.remove (downloaded_file_name)
     return await event.edit(f"{text}\n\n**Install completed**")

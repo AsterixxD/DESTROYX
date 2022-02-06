@@ -26,7 +26,7 @@ async def gsearch(q_event):
     try:
         page = page[0]
         page = page.replace("page=", "")
-        match = match.replace("page=" + page[0], "")
+        match = match.replace(f'page={page[0]}', "")
     except IndexError:
         page = 1
     search_args = (str(match), int(page))
@@ -47,7 +47,7 @@ async def gsearch(q_event):
     if BOTLOG:
         await q_event.client.send_message(
             BOTLOG_CHATID,
-            "Google Search query `" + match + "` was executed successfully",
+            f'Google Search query `{match}` was executed successfully',
         )
 
 
@@ -146,7 +146,7 @@ async def _(img):
             await catevent.edit("`Google told me to fuck off.`")
             return
         os.remove(name)
-        match = await ParseSauce(fetchUrl + "&preferences?hl=en&fg=1#languages")
+        match = await ParseSauce(f'{fetchUrl}&preferences?hl=en&fg=1#languages')
         guess = match["best_guess"]
         imgspage = match["similar_images"]
         if guess and imgspage:
